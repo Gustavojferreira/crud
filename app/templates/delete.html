@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav
+    class="nav justify-content-center flex-xxl-column"
+    >
+    <a class="nav-link " href="/" aria-current="page">Home</a>|
+    <a class="nav-link" href="/create">adicionar</a>|
+    <a class="nav-link" href="/update">alterar</a>|
+    <a class="nav-link" href="/recovery">Tabela</a>|
+    <a class="nav-link" href="/delete">Deletar</a>|
+
+    </nav>
+
+    <form method="POST" action="{{ url_for('delete') }}">
+        <label for="id">Id do Produto:</label>
+        <input type="text" id="id" name="id" required><br><br>
+
+        <button type="submit">Deletar Produto</button>
+    </form>
+
+</body>
+</html>
