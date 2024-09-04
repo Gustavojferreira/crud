@@ -1,0 +1,35 @@
+/* Estilos básicos para a barra de navegação */
+.nav {
+    background-color: #f8f9fa; /* Cor de fundo */
+    padding: 10px 0; /* Espaçamento interno */
+    border-bottom: 1px solid #dee2e6; /* Linha inferior */
+}
+
+.nav-link {
+    color: #007bff; /* Cor do texto */
+    text-decoration: none; /* Remover sublinhado */
+    padding: 0 15px; /* Espaçamento lateral */
+    font-size: 16px; /* Tamanho da fonte */
+}
+
+.nav-link:hover {
+    color: #0056b3; /* Cor do texto ao passar o mouse */
+}
+
+.nav a {
+    display: inline-block; /* Exibir links em linha */
+    padding: 8px 12px; /* Espaçamento interno dos links */
+}
+
+.flex-xxl-column {
+    display: flex; /* Flexbox para layout flexível */
+    flex-direction: row; /* Alinhamento horizontal */
+    justify-content: center; /* Centralizar itens horizontalmente */
+    flex-wrap: wrap; /* Permitir quebra de linha se necessário */
+}
+
+@media (max-width: 767px) {
+    .flex-xxl-column {
+        flex-direction: column; /* Alinhar itens verticalmente em telas pequenas */
+    }
+}

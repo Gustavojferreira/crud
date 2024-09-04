@@ -4,20 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recovery.css') }}">
+
 </head>
+
 <body>
-    <nav
-    class="nav justify-content-center flex-xxl-column"
-    >
-    <a class="nav-link " href="/" aria-current="page">Home</a>|
-    <a class="nav-link" href="/create">adicionar</a>|
-    <a class="nav-link" href="/update">alterar</a>|
-    <a class="nav-link" href="/recovery">Tabela</a>|
-    <a class="nav-link" href="/delete">Deletar</a>|
-
-
-    </nav>
-
+    {% include 'home.html' %}
     <h1>Tabela de produtos</h1>
     <div class="container">
         <table>
