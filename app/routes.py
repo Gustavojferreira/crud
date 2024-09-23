@@ -24,10 +24,13 @@ def create():
     if request.method == 'POST':
         nome_produto = request.form['nome_produto']
         valor_produto = request.form['valor_produto']
+        quantidade_produto = request.form['quantidade_produto']
+        categoria_produto = request.form['categoria_produto']
+        validade = request.form['validade']
 
         conn = dbconnect()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO vendas (nome_produto, valor_produto) VALUES (%s, %s)", (nome_produto, valor_produto))
+        cursor.execute("INSERT INTO vendas (nome_produto, valor_produto, quantidade_produto,categoria, validade) VALUES (%s, %s, %s, %s, %s)", (nome_produto, valor_produto, quantidade_produto, categoria_produto, validade))
         conn.commit()
         cursor.close()
         conn.close()
@@ -55,10 +58,13 @@ def update():
         idvendas = request.form['id']
         nome_produto = request.form['nome_produto']
         valor_produto = request.form['valor_produto']
+        quantidade_produto = request.form['quantidade_produto']
+        categoria_produto = request.form['categoria_produto']
+        validade = request.form['validade']
 
         conn = dbconnect()
         cursor = conn.cursor()
-        cursor.execute("UPDATE vendas SET nome_produto=%s, valor_produto=%s WHERE idvendas=%s", (nome_produto, valor_produto, idvendas))
+        cursor.execute("UPDATE vendas SET nome_produto=%s, valor_produto=%s, quantidade_produto=%s, categoria=%s, validade=%s WHERE idvendas=%s", (nome_produto, valor_produto, quantidade_produto, categoria_produto, validade, idvendas))
         conn.commit()
         cursor.close()
         conn.close()
