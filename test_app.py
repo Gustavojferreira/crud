@@ -2,17 +2,16 @@ import pytest
 from app import app
 from app.routes import dbconnect  # Importe 'dbconnect' de routes.py
 
-
+#Define o aplicativo em modo teste, só Deus sabe oque é.
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
 
-
+# Faz a limpa na tabela 
 @pytest.fixture(autouse=True)
 def setup_and_teardown():
-    # Faz o rapa na tabela
     conn = dbconnect()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM vendas") 
@@ -21,7 +20,42 @@ def setup_and_teardown():
     conn.close()
     yield  
 
+#Cenario Excluir um Produto pelo ID
+def teste_Delete(client):
+    
+    new_product = {
+        'nome_produto': 'Produto para Deletar',
+        'valor_produto': '20.00',
+        'quantidade_produto': '5',
+        'categoria_produto': 'Acessórios',
+        'validade': '2025-01-01'
+    }
 
+    # Fazendo uma requisição POST para /create
+    response = client.post('/create', data=new_product, follow_redirects=True)
+    assert response.status_code == 200
+
+    # Conexão com o banco 
+    conn = dbconnect()
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        idvendas = cursor.fetchone()[0]  
+
+        # Fazendo uma requisição POST para /delete
+        response = client.post('/delete', data={'id': idvendas}, follow_redirects=True)
+
+        # Verificando se o produto foi realmente deletado
+        cursor.execute("SELECT * FROM vendas WHERE idvendas = %s", (idvendas,))
+        result = cursor.fetchone()
+
+        assert result is None #se é None funfou
+    finally:
+        cursor.close()
+        conn.close()    
+
+#Cenario : Criação simples de produto no banco de dados
 def teste_Create(client):
     new_product = {
         'nome_produto': 'Produto Teste',
@@ -54,14 +88,15 @@ def teste_Create(client):
         cursor.close()
         conn.close()
 
-
+ #Cenario Alterar a informação de um produto do Bd pelo ID
 def teste_Update(client):
+   
     # Criar um produto
     new_product = {
         'nome_produto': 'Produto Teste',
         'valor_produto': '25.50',
         'quantidade_produto': '10',
-        'categoria_produto': 'Eletrônicos',
+        'categoria_produto': 'eletrônicos',
         'validade': '2025-12-31'
     }
 
@@ -81,7 +116,7 @@ def teste_Update(client):
             'nome_produto': 'Produto Atualizado',
             'valor_produto': '30.00',
             'quantidade_produto': '15',
-            'categoria_produto': 'Eletrônico',
+            'categoria_produto': 'comida',
             'validade': '2026-12-31'
         }
 
@@ -101,3 +136,28 @@ def teste_Update(client):
     finally:
         cursor.close()
         conn.close()
+
+#Cenario alerta para produtos com menos de 5 em estoque 
+def teste_Alerta(client):
+   
+    product_to_insert = (
+        'Produto Teste',  
+        25.50,            
+        4,                
+        'comida',    
+        '2025-12-31'      
+    )
+
+    conn = dbconnect()
+    cursor = conn.cursor()
+
+    cursor.execute("INSERT INTO vendas (nome_produto, valor_produto, quantidade_produto, categoria, validade) VALUES (%s, %s, %s, %s, %s)", product_to_insert)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    response = client.get('/recovery')
+
+    # Verificando se o produto está na lista de baixo estoque
+    assert b'Produto Teste' in response.data  # Espera encontrar o nome do produto na resposta
+    assert b'4' in response.data  # Verificando se a quantidade está correta

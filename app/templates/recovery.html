@@ -5,11 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/recovery.css') }}">
-
+    <script>
+        function showAlert() {
+            alert('Atenção: Existem produtos com quantidade menor que 5!');
+        }
+    </script>
 </head>
 
 <body>
     {% include 'home.html' %}
+
+    {% if baixo_estoque %}
+        <script>
+            showAlert();
+        </script>
+    {% endif %}
+
     <h1>Tabela de produtos</h1>
     <div class="container">
         <table>
@@ -24,6 +35,9 @@
                 </tr>
             </thead>
             <tbody>
+                {% if alert %}
+                    <script>showAlert("{{ alert }}");</script>
+                {% endif %}
                 {% for produtos in produtos %}
                 <tr>
                     <td>{{ produtos[0] }}</td>

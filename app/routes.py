@@ -48,8 +48,11 @@ def recovery():
     produtos = cursor.fetchall()
     cursor.close()
     conn.close()
+    
+    baixo_estoque = [produto for produto in produtos if produto[3] < 5]
 
-    return render_template('recovery.html', produtos=produtos)
+
+    return render_template('recovery.html', produtos=produtos, baixo_estoque=baixo_estoque)
 
 # Update 
 @app.route('/update', methods=['GET', 'POST'])
