@@ -31,7 +31,7 @@ def teste_Create(client):
         'validade': '2025-12-31'
     }
 
-    # Fazendo uma requisição POST para a /create
+    # Fazendo uma requisição POST para /create
     response = client.post('/create', data=new_product, follow_redirects=True)
     assert response.status_code == 200
 
