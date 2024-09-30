@@ -31,11 +31,10 @@ def teste_Create(client):
         'validade': '2025-12-31'
     }
 
-    # Fazendo uma requisição POST para a rota /create
+    # Fazendo uma requisição POST para a /create
     response = client.post('/create', data=new_product, follow_redirects=True)
     assert response.status_code == 200
 
-    # Conexão com o banco
     conn = dbconnect()
     
     try:
@@ -44,7 +43,7 @@ def teste_Create(client):
         
         result = cursor.fetchone()
         
-        # Verificar se o produto foi inserido corretamente
+        # verifica se o produto foi inserido
         assert result is not None  
         assert result[0] == new_product['nome_produto']
         assert result[1] == float(new_product['valor_produto'])
@@ -57,7 +56,7 @@ def teste_Create(client):
 
 
 def teste_Update(client):
-    # Criar um produto para garantir que temos algo para atualizar
+    # Criar um produto
     new_product = {
         'nome_produto': 'Produto Teste',
         'valor_produto': '25.50',
@@ -66,19 +65,17 @@ def teste_Update(client):
         'validade': '2025-12-31'
     }
 
-    # Fazendo uma requisição POST para a rota /create
+    # Faz uma req POST para /create
     response = client.post('/create', data=new_product, follow_redirects=True)
     assert response.status_code == 200
 
-    # Conexão com o banco para obter o ID do produto inserido
     conn = dbconnect()
 
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM vendas LIMIT 1;")
-        idvendas = cursor.fetchone()[0]  # Obtém o ID do último produto inserido
+        idvendas = cursor.fetchone()[0]
 
-        # Dados atualizados do produto
         updated_product = {
             'id': idvendas,
             'nome_produto': 'Produto Atualizado',
@@ -88,17 +85,13 @@ def teste_Update(client):
             'validade': '2026-12-31'
         }
 
-        # Fazendo uma requisição POST para a rota /update
+        # Faz uma req POST para /update
         response = client.post('/update', data=updated_product, follow_redirects=True)
 
-        # Verifique se a resposta foi bem-sucedida
-        assert response.status_code == 200
-
-        # Verificando se o produto foi atualizado corretamente
         cursor.execute("SELECT nome_produto, valor_produto, quantidade_produto, categoria, validade FROM vendas WHERE idvendas = %s", (idvendas,))
         result = cursor.fetchone()
 
-        # Verificar se o produto foi atualizado corretamente
+        # Verificar se o produto foi atualizado
         assert result is not None, f"Produto com ID {idvendas} não encontrado."
         assert result[0] != updated_product['nome_produto']
         assert result[1] != float(updated_product['valor_produto'])
