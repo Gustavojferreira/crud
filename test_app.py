@@ -2,7 +2,7 @@ import pytest
 from app import app
 from app.routes import dbconnect  # Importe 'dbconnect' de routes.py
 
-#Define o aplicativo em modo teste, só Deus sabe oque é.
+#Define o aplicativo em modo teste
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
@@ -50,7 +50,7 @@ def teste_Delete(client):
         cursor.execute("SELECT * FROM vendas WHERE idvendas = %s", (idvendas,))
         result = cursor.fetchone()
 
-        assert result is None #se é None funfou
+        assert result is None 
     finally:
         cursor.close()
         conn.close()    
